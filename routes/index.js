@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 const Comment = require("../models/Comment");
@@ -16,9 +17,12 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Stackoverflow clone' });
 });
 
+router.get("/api/user/register", (req, res, next) => {
+  res.render("register");
+});
 
 router.post("/api/user/register", 
-body("email").isLength({min: 1}),
+body("email"),
 body("password")
   .isString()
   .isLength({ min: 8 })
@@ -31,6 +35,7 @@ body("password")
   .not()
   .isAlpha(),
 (req, res, next) =>{
+  console.log(req.body)
   const errors = validationResult(req);
   // help from to get right format for check without regex https://stackoverflow.com/questions/34760548/how-to-validate-password-using-express-validator-npm
   
@@ -44,6 +49,7 @@ body("password")
       return res.status(403).json({email: "email already in use."});
     }else {
 
+      console.log(req.body)
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(req.body.password, salt, (err, hash) => {
           if(err) throw err;
@@ -60,9 +66,7 @@ body("password")
                 id: user._id })
               
              
-              return res.send({email: user.email,
-                              password: user.password,
-                              id: user._id });
+              return res.redirect('/')
             }
           )
         })
@@ -71,4 +75,41 @@ body("password")
   })
 })
 
+router.post('/api/user/login', 
+  body("email"),
+  body("password"),
+  (req, res, next) => {
+    User.findOne({email: req.body.email}, (err, user) =>{
+    if(err) throw err;
+    //Check if email is the same.
+    if(!user) {
+      return res.status(401).json({message: "Login failed."});
+    } else {
+      bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
+        if(err) throw err;
+        if(!isMatch){
+          return res.status(401).json({message: "Login failed."});
+        }
+        if(isMatch) {
+          const jwtPayload = {
+            id: user._id,
+            email: user.email
+          }
+          jwt.sign(
+            jwtPayload,
+            process.env.SECRET,
+            {
+              expiresIn: 180000
+            },
+            (err, token) => {
+              res.json({success: true, token});
+            }
+          );
+        }
+      })
+    }
+
+    })
+
+});
 module.exports = router;

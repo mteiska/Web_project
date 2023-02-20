@@ -1,5 +1,8 @@
-extends layout
-
 block content
   h1= title
-  p Welcome to #{title}
+  div(class="nav-wrapper")
+      a(class='register', href="/api/user/register" id = "signup", name = "sign") Sign-up
+      a(class='userlogin',href="/api/user/login", id = "login", name = "user_login") Login
+      ul(id="nav-mobile" class="right hide-on-med-and-down")
+        li 
+          a(href="sass.html") SAAS
