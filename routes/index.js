@@ -66,7 +66,7 @@ body("password")
                 id: user._id })
               
              
-              return res.redirect('/')
+            res.redirect('/')
             }
           )
         })
@@ -74,7 +74,9 @@ body("password")
     }
   })
 })
-
+router.get("/api/user/login", (req, res, next) => {
+  res.render("login");
+});
 router.post('/api/user/login', 
   body("email"),
   body("password"),
