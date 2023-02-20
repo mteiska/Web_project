@@ -1,0 +1,24 @@
+Implementation of backend with Node.js
+You can of course use Express, Meteor or any other additional framework
+Java, PHP, Perl, Python, Ruby or other language solutions are not allowed in this course
+Utilization of database
+MongoDB, MariaDB or any other you see fit
+Authentication
+Users have to have an option to register and login
+You can use JWT or session based authorization
+Only authenticated users can post, comment (or vote)
+Features
+Authenticated users can:
+Post new code snippets
+Comment on existing posts
+Non-authenticated users can see posts, comments (and vote counts)
+There is some page listing all the post, after opening one post, comments are also listed
+Responsive design
+The app needs to be usable with mobile devices and desktop browsers
+Use of Materialize or Bootstrap is recommended
+Documentation
+There needs to be documentation describing the technology choices, installation guidelines and user manual
+Also list the features you have implemented and the number of points you are aiming at
+
+
+As database we use MongoDB and we create few schemas one for post and one for comments and one for User.
