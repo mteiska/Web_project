@@ -14,7 +14,14 @@ let User_list = []
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Stackoverflow clone' });
+  Post.find({}, (err, posts) =>{
+    if(err){
+      res.render('index', { title: 'Stackoverflow clone'});
+    }
+    res.render('index', { title: 'Stackoverflow clone', posts});
+
+  })
+  
 });
 
 router.get("/api/user/register", (req, res, next) => {
@@ -77,6 +84,62 @@ body("password")
 router.get("/api/user/login", (req, res, next) => {
   res.render("login");
 });
+
+router.get("/api/user/open/:id", (req, res, next) => {
+  Post.findById(req.params.id, (err, post) =>{
+  if(err) throw err;
+  res.render("Post", {post})
+  })
+})
+
+router.get("/api/user/open/auth/:id", (req, res, next) => {
+  Post.findById(req.params.id, (err, post) =>{
+  if(err) throw err;
+  res.render("Post_auth", {post})
+  })
+})
+router.post("/api/user/createPost", body("post_title"), body("post_text"), 
+(req,res,next)=>{
+  Post.create({
+    postname: req.body.post_title,
+    code: req.body.post_text,
+    comment_ids: []
+  }, (err, ok) =>{
+    if(err) throw err;
+    Post.find({}, (err, posts) =>{
+      res.render("posts", {posts})
+      })
+  })
+})
+
+router.post("/api/user/createComment/:id",
+body("comment"), 
+(req,res,next)=>
+{
+
+Comment.create({
+  comment_text: "jotain"
+
+}
+, (err, ok) =>{
+  if(err) throw err;
+  let comment = ok.toJSON()
+  Post.findByIdAndUpdate(req.params.id, {$push: {"comment_ids": comment.id}},
+  {
+    new: true
+  },(err, ok) => {
+    if(err) throw err;
+    let post = ok.toJSON()
+    console.log(post)
+  }
+  
+)}
+)}
+)
+
+  
+  
+
 router.post('/api/user/login', 
   body("email"),
   body("password"),
@@ -85,12 +148,13 @@ router.post('/api/user/login',
     if(err) throw err;
     //Check if email is the same.
     if(!user) {
-      return res.status(401).json({message: "Login failed."});
+
+      res.redirect(401, "/")
     } else {
       bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
         if(err) throw err;
         if(!isMatch){
-          return res.status(401).json({message: "Login failed."});
+          res.redirect(401, "/")
         }
         if(isMatch) {
           const jwtPayload = {
@@ -104,7 +168,16 @@ router.post('/api/user/login',
               expiresIn: 180000
             },
             (err, token) => {
-              res.json({success: true, token});
+              if(token){
+              //res.json({success: true, token});
+              Post.find({}, (err, posts) =>{
+                if(err) return next(err);
+                res.render("posts", {posts})
+              })
+              }
+              else{
+                res.redirect("/")
+              }
             }
           );
         }

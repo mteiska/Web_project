@@ -1,4 +1,24 @@
-extends layout
-div(class="container", id = "post_container")
-    div(class = "col", id = "post")
-       h1 Top posts 
+block content
+    
+    div(class="container", id = "post_container")
+        form(action="/api/user/createPost" method="POST")
+            label(for="post_title") Post title
+            input(type="text" name="post_title" id="post_title" required)
+            label(for="post_text") Post text 
+            input(type="text" name="post_text" id="post_text" required)
+            button(class="btn" type="submit") Create a post
+
+        
+        
+        div(class = "col", id = "post")
+          ul(id="nav-mobile" class="right hide-on-med-and-down")
+            li 
+                h1 Top posts 
+               
+                th #
+                th Title
+                
+                each post, index in posts
+                  ol
+                    a(href=`/api/user/open/auth/${post["id"]}`) #{post["postname"]}
+

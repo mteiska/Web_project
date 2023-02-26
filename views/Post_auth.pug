@@ -1,0 +1,23 @@
+link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous")
+div(class="nav-wrapper")
+    div(nav)
+        h1 Post Title: #{post.postname}
+        
+
+        pr Post text:
+
+        h2 #{post.code}
+
+    div(name= "comments", id = "comments")
+        h2 Placeholder for comment
+        h3 #{post.comment_ids}
+
+
+    div(name="create_comment", id= "create_comment")
+        form(action=`/api/user/createComment/${post._id}` method="POST")
+            label(for="comment") Comment
+            input(type="text" name="comment" id="comment" required)
+            button(class="btn" type="submit") Create a new comment
+            
+
+

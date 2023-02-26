@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 //Create new schema for post information
 let Post = new Schema ({
     postname: {type: String},
-    code: {type: String}
+    code: {type: String},
+    comment_ids: {type: Array}
 
 });
 

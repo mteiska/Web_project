@@ -14,28 +14,23 @@ if (document.readyState !== "loading") {
     const postList = document.getElementById("post");
     
        
-       
-        fetch('/listPosts', {
-            method : 'get',
-            headers: {
-                "Content-type": "application/json"
-              }
+     
+
+
+      postMaker.addEventListener("click", function(){
+        fetch('/api/user/createPost',  {
+          method: 'get',
+          headers: {
+            "Content-type": "application/html"
+          }
+        })
+        .then(function(response) {
+          if(response.ok) {
+            console.log('Click was recorded');
             
-          })
-          .then(response => response.json())
-          .then(data => {
-        const ul = document.createElement("ul")
-        for (i = 0; i < data.length; i++) {
-            const node = document.createElement("li")
-            node.setAttribute(text = data[i].postname)
-            ul.appendChild(node);
-        }
-        const col = document.getElementById("col");
-        col.appendChild(ul)
-
-          })
-
-
- 
+          }
+      })
+    })
+      
 
   }

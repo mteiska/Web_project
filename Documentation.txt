@@ -24,6 +24,7 @@ Also list the features you have implemented and the number of points you are aim
 As database we use MongoDB and we create few schemas one for post and one for comments and one for User.
 index.js includes router code, user registration and login code.
 Pug is used as view engine.
+Bootstrap is used for css and for mobile usage.
 Authentication is done by JWT and by hashing password so its not saved as plain text. If interested token can be decoded with https://jwt.io/
 register.pugin pohjana käytetty luentokoodeja viikolta 7.
 After registering user is redirected to home page from where user can now login to the site so user can create posts and comment to posts.
