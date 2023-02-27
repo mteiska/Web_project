@@ -9,8 +9,8 @@ div(class="nav-wrapper")
         h2 #{post.code}
 
     div(name= "comments", id = "comments")
-        h2 Placeholder for comment
-        h3 #{post.comment_ids}
+        script(id = "helper" data = post.comment_ids src="/javascripts/comment_fetch.js")
+
 
 
     div(name="create_comment", id= "create_comment")
