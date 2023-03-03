@@ -1,23 +1,36 @@
 link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous")
-div(class="nav-wrapper")
-    div(nav)
-        h1 Post Title: #{post.postname}
+meta(name="viewport" content="width=device-width, initial-scale=1")
+
+div(class="container-fluid" id = "nav-wrapper")
+  
+    div(class = "row")
+        h1 Post Title: 
         
+            pr #{post.postname}
+    div(class = "col-xs-12 col-md-8")        
+        div(class = "row-xs-12")
+            h2 Post text:
+            |
+            |  
+            h2 #{post.code}
+            p    
+        div(class = "row-xs-20")
+            p
+        div(class = "row-xs-20")
+            div(name= "comments", id = "comments")
+                h2 Comments:
+                script(id = "helper" data = post.comment_ids src="/javascripts/comment_fetch.js")
 
-        pr Post text:
 
-        h2 #{post.code}
-
-    div(name= "comments", id = "comments")
-        script(id = "helper" data = post.comment_ids src="/javascripts/comment_fetch.js")
-
-
-
-    div(name="create_comment", id= "create_comment")
-        form(action=`/api/user/createComment/${post._id}` method="POST")
-            label(for="comment") Comment
-            input(type="text" name="comment" id="comment" required)
-            button(class="btn" type="submit") Create a new comment
+        div(class="row")
+            div(name="create_comment", id= "create_comment")
+                form(action= "" id = "comment-form" method="POST")
+                    label(for="comment") Write a new comment:
+                    p
+                    textarea(name="comment", cols="30", rows="10" , type="text", id="comment", required)
+                    p
+                    button(class="btn" type="submit" style = "background: aquamarine") Create a new comment
+                    script(src = "/javascripts/comment_post.js")
             
 
 

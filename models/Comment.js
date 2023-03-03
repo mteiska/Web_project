@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
-//Create new schema for post information
+//Create new schema for Comment information
 let Comment = new Schema ({
     comment_text: {type: String}
 

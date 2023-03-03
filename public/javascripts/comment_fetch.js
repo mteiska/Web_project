@@ -11,10 +11,12 @@ if (document.readyState !== "loading") {
  function comment_fetch() {
     var comment_ids = document.getElementById("helper").getAttribute("data");
     console.log(comment_ids)
+    
+
     fetch(`/api/user/getComments`,  {
         method: 'post',
         headers: {
-          "Content-type": "application/json"
+          "Content-type": "application/json",
         },
         body: comment_ids
       }).then(response => response.json())

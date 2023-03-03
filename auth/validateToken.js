@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 //Created by using lecture materials
 module.exports = function(req, res, next){
 
-    const authHeader = req.headers["authorization"]
+    const authHeader =  req.headers["authorization"]
     console.log(authHeader);
     let token;
     //Check if token exists
@@ -19,7 +19,7 @@ module.exports = function(req, res, next){
     jwt.verify(token, process.env.SECRET, (err, user)=> {
         if(err)return res.sendStatus(401);
         req.user = user;
-        res.send({email: user.email});
+        return;
     })
     next();
 }

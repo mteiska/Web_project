@@ -1,18 +1,22 @@
+//author: Mika Teiska
+//See Documentation.txt for documentation and usage.
+
 require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
-
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const validateToken = require("../auth/validateToken.js")
-let User_list = []
+const multer = require("multer")
+const storage = multer.memoryStorage();
+const upload = multer({storage})
 
-/* GET home page. */
+//Get home page
 router.get('/', function (req, res, next) {
   Post.find({}, (err, posts) => {
     if (err) {
@@ -23,11 +27,11 @@ router.get('/', function (req, res, next) {
   })
 
 });
-
+//Render registration page from there on form submit router.post(/api/user/register") is called. 
 router.get("/api/user/register", (req, res, next) => {
   res.render("register");
 });
-
+//Password validation and user registering
 router.post("/api/user/register",
   body("email"),
   body("password")
@@ -55,6 +59,7 @@ router.post("/api/user/register",
       if (user) {
         return res.status(403).json({ email: "email already in use." });
       } else {
+        //generate hash from plain text password to be saved in the MongoDB
 
         console.log(req.body)
         bcrypt.genSalt(10, (err, salt) => {
@@ -68,12 +73,7 @@ router.post("/api/user/register",
               (err, ok) => {
                 if (err) throw err;
                 user = ok.toJSON()
-                User_list.push({
-                  email: user.email,
-                  password: user.password,
-                  id: user._id
-                })
-
+             
 
                 res.redirect('/')
               }
@@ -86,22 +86,77 @@ router.post("/api/user/register",
 router.get("/api/user/login", (req, res, next) => {
   res.render("login");
 });
+//Login user if email and password match data in database and create jwt token for user
+router.post('/api/user/login',
+  body("email"),
+  body("password"),upload.none(),
+  (req, res, next) => {
+    console.log(req.body)
+    User.findOne({ email: req.body.email }, (err, user) => {
+      if (err){
+        res.json({message: "Login failed. Username and/or password is wrong"})
+      }
+      //Check if email is the same.
+      if (!user) {
 
+        res.json({message: "Login failed. Username and/or password is wrong"})
+      } else {
+        //Check if password hash matches
+        bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
+          if (err) throw err;
+          if (!isMatch) {
+           
+            res.json({message: "Login failed. Username and/or password is wrong"})
+          }
+          if (isMatch) {
+            const jwtPayload = {
+              id: user._id,
+              email: user.email
+            }
+            jwt.sign(
+              jwtPayload,
+              process.env.SECRET,
+              {
+                expiresIn: 180000
+              },
+              (err, token) => {
+                //if login was succesful take token and return it to frontend.js where it will be stored
+                if (token) {
+                  res.json({success: true, token});
+                  
+                 
+                }
+                else {
+                  res.redirect("/")
+                }
+              }
+            );
+          }
+        })
+      }
+
+    })
+
+  });
+//Opening post when not authored to post comments
 router.get("/api/user/open/:id", (req, res, next) => {
   Post.findById(req.params.id, (err, post) => {
     if (err) throw err;
     res.render("Post", { post })
   })
 })
-
+//Opening post when authored to comment
 router.get("/api/user/open/auth/:id", (req, res, next) => {
   Post.findById(req.params.id, (err, post) => {
     if (err) throw err;
     res.render("Post_auth", { post })
   })
 })
-router.post("/api/user/createPost", body("post_title"), body("post_text"),
+//Create post and validate jwt token if succesful posts are reloaded
+router.post("/api/user/createPost",body("post_title"), body("post_text"), validateToken, upload.none(),
   (req, res, next) => {
+    
+    
     Post.create({
       postname: req.body.post_title,
       code: req.body.post_text,
@@ -109,18 +164,22 @@ router.post("/api/user/createPost", body("post_title"), body("post_text"),
     }, (err, ok) => {
       if (err) throw err;
       Post.find({}, (err, posts) => {
-        res.render("posts", { posts })
+        if (err) throw err;
+        res.render("posts", {posts})
       })
     })
   })
-  router.post("/api/user/getComments", async function(req,res,next){
+  //Route to get comments from database
+  router.post("/api/user/getComments",  async function(req,res,next){
     console.log(req.body)
     const records = await Comment.find({ '_id': { $in: req.body } });
       res.json(records)
     })
  
+//Create comment for specific post and link to it and update the Post information in database
+//Also validating jwt token for commenting so unauthorized users cant comment
 router.post("/api/user/createComment/:id",
-  body("comment"),
+  body("comment"),validateToken,upload.none(),
   (req, res, next) => {
 
     Comment.create({
@@ -150,54 +209,13 @@ router.post("/api/user/createComment/:id",
   }
 )
 
-
-
-
-router.post('/api/user/login',
-  body("email"),
-  body("password"),
-  (req, res, next) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
-      if (err) throw err;
-      //Check if email is the same.
-      if (!user) {
-
-        res.redirect(401, "/")
-      } else {
-        bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
-          if (err) throw err;
-          if (!isMatch) {
-            res.redirect(401, "/")
-          }
-          if (isMatch) {
-            const jwtPayload = {
-              id: user._id,
-              email: user.email
-            }
-            jwt.sign(
-              jwtPayload,
-              process.env.SECRET,
-              {
-                expiresIn: 180000
-              },
-              (err, token) => {
-                if (token) {
-                  //res.json({success: true, token});
-                  Post.find({}, (err, posts) => {
-                    if (err) return next(err);
-                    res.render("posts", { posts })
+//Route to get posts
+router.get('/api/user/posts', (req,res,next)=>{
+   Post.find({}, (err, posts) => {
+    if (err) return next(err);
+    res.render("posts", { posts })
                   })
-                }
-                else {
-                  res.redirect("/")
-                }
-              }
-            );
-          }
-        })
-      }
+})
 
-    })
 
-  });
 module.exports = router;

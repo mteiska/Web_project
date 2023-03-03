@@ -1,30 +1,42 @@
-Implementation of backend with Node.js
-You can of course use Express, Meteor or any other additional framework
-Java, PHP, Perl, Python, Ruby or other language solutions are not allowed in this course
-Utilization of database
-MongoDB, MariaDB or any other you see fit
-Authentication
-Users have to have an option to register and login
-You can use JWT or session based authorization
-Only authenticated users can post, comment (or vote)
-Features
-Authenticated users can:
-Post new code snippets
-Comment on existing posts
-Non-authenticated users can see posts, comments (and vote counts)
-There is some page listing all the post, after opening one post, comments are also listed
-Responsive design
-The app needs to be usable with mobile devices and desktop browsers
-Use of Materialize or Bootstrap is recommended
-Documentation
-There needs to be documentation describing the technology choices, installation guidelines and user manual
-Also list the features you have implemented and the number of points you are aiming at
+Documentation:
+    Lecture materials and course codes were used as a support
+    As database we use MongoDB and we create few schemas one for Post and one for Comment and one for User.
+    index.js includes router code, user registration and login code, creating comments, creating posts etc. 
+    Pug is used as view engine.
+    Bootstrap is used for css and for responsive design base for mobile usage.
+    Authentication is done by JWT and by hashing password so its not saved as plain text. If interested token can be decoded with https://jwt.io/
+    register.pug base was done with lecture 7 materials
+    Users are saved by email and password to the database
+    After registering user is redirected to home page from where user can now login with just created account and user can then after login create posts and comment to posts.
+    JWT token is validated before creating posts or comments so that unauthorized users cannot create posts or comment 
+
+    App usage:
+        - After installing necessary dependencies (if applicable) run program by writing "npm start" to terminal and then going to http://localhost:3000/.
+        - There will be a home page for the application from where you will be able to "Sign-up" and "Login"
+
+        From here unauthorized users can also access posts and see comments by pressing post names.
+
+            - When registering it is important to note password requirements: 
+                
+                1. Minimum lenght is 8 characters
+                2. At least 1 uppercase and lowercase letter
+                3. At least one number
+            Otherwise you will be directed to error page if this happens reload earlier page 
+            and try again and check that you have fulfilled the necessary password requirements.
+        - After succesful login user sees  Post title, Post Text texts and corresponding text areas they have to filled and after that press "Create a post" button to create a new post.
+            Then post will be sent to database
+        After this you will see your new post at the bottom of the list and by pressing the link you will see its post text contents and comments if there are any.
+        - From here it is possible also to add comments to posts, when comment is written it is linked to a post that it was under by id.
+        Refresh the page if at some point your post/comment is not showing.
+    Javascript is the chosen language for this application
+    You can see the different views from views directory
+    Views were made to be responsive and usable by mobile phone.
+    Validation of token can be seen from auth/validateToken.js and called from routes/index.js and from createCommen, and createPost routes.
+    You can see your auth_token from your browsers localStorage-tab if you are interested.
 
 
-As database we use MongoDB and we create few schemas one for post and one for comments and one for User.
-index.js includes router code, user registration and login code.
-Pug is used as view engine.
-Bootstrap is used for css and for mobile usage.
-Authentication is done by JWT and by hashing password so its not saved as plain text. If interested token can be decoded with https://jwt.io/
-register.pugin pohjana käytetty luentokoodeja viikolta 7.
-After registering user is redirected to home page from where user can now login to the site so user can create posts and comment to posts.
+I would like to get 25 points since all the mandatory requirements are filled.
+
+
+
+

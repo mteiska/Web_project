@@ -1,24 +1,33 @@
 block content
-    
-    div(class="container", id = "post_container")
-        form(action="/api/user/createPost" method="POST")
-            label(for="post_title") Post title
-            input(type="text" name="post_title" id="post_title" required)
-            label(for="post_text") Post text 
-            input(type="text" name="post_text" id="post_text" required)
-            button(class="btn" type="submit") Create a post
+  link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous")
+  meta(name="viewport" content="width=device-width, initial-scale=1")
+  div(class = "container")
+    div(class="w-100 p-3", id = "post_container")
+      form(action= "" id = "post-form" method="POST")
+        p Post title
+          p
+          label(for="post_title")
+          input(name="post_title", id="post_title", required, type="text") 
+        p Post Text
+          p
+          label(for="post_text")
+          textarea(name="post_text", id="post_text", required,  cols="30", rows="10", type="text") 
+        button(class="btn" type="submit" style = "background: aquamarine") Create a post
+        script(src = "/javascripts/post_fetch.js")
+            
 
-        
-        
-        div(class = "col", id = "post")
-          ul(id="nav-mobile" class="right hide-on-med-and-down")
-            li 
-                h1 Top posts 
-               
-                th #
-                th Title
+
+          
+          
+    div(class = "w-100 p-3", id = "post")
+      ul(id="nav-mobile" class="right hide-on-med-and-down")
+        li 
+          h1 Top posts 
                 
-                each post, index in posts
-                  ol
-                    a(href=`/api/user/open/auth/${post["id"]}`) #{post["postname"]}
-
+          th #
+          th Title
+                  
+          each post, index in posts
+            ol
+              a(href=`/api/user/open/auth/${post["id"]}`) #{post["postname"]}
+          
