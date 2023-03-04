@@ -1,3 +1,4 @@
+Author: Mika Teiska, 0522112
 Documentation:
     Lecture materials and course codes were used as a support
     As database we use MongoDB and we create few schemas one for Post and one for Comment and one for User.
@@ -36,6 +37,7 @@ Documentation:
 
 
 I would like to get 25 points since all the mandatory requirements are filled.
+Also additionally login will tell if user has failed to login and extra password requirements were added that were not asked.
 
 
 
