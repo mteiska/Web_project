@@ -11,7 +11,7 @@ Documentation:
     JWT token is validated before creating posts or comments so that unauthorized users cannot create posts or comment 
 
     App usage:
-        - After installing necessary dependencies (if applicable) run program by writing "npm start" to terminal and then going to http://localhost:3000/.
+        - After installing necessary dependencies "npm i" should work but you may need to install dotenv seperately by "npm install dotenv" (if applicable) run program by writing "npm start" to terminal and then going to http://localhost:3000/.
         - There will be a home page for the application from where you will be able to "Sign-up" and "Login"
 
         From here unauthorized users can also access posts and see comments by pressing post names.
